@@ -123,7 +123,7 @@ const getItem = () => {
       document.querySelector('#add-link').href = `add.html?code=${urlCode}&q=${qCode}`
     } else {
       document.querySelector("#name").textContent = item.name
-      let spooniesCount = parseInt(item.raw_total_sugar) / LINGURITA_SUGAR
+      let spooniesCount = parseInt(parseInt(item.raw_total_sugar) / LINGURITA_SUGAR)
       const spooniesCountConst = spooniesCount
       let spooniesText = spooniesCount + " lingurițe zahăr<br />"
       while (spooniesCount > 0) {
@@ -150,7 +150,7 @@ const getItem = () => {
 
             setInterval(function () {
               currentTime += 1
-              if (currentTime == spooniesCountConst * VIDEO_TIME_PER_SPOONY) {
+              if (currentTime >= spooniesCountConst * VIDEO_TIME_PER_SPOONY) {
                 player.seekTo(0)
                 currentTime = 0
               }
