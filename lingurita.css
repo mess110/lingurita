@@ -8,12 +8,23 @@ html, body {
     margin: auto;
     text-align: center;
 }
+
 .container {
     display: flex;
     height: 100%;
     justify-content: center;
     flex-direction: column;
 }
+
+@media all and (orientation:portrait) {
+}
+
+@media all and (orientation:landscape) {
+    .container {
+        flex-direction: row;
+    }
+}
+
 
 input.rounded {
     width: 100%;
@@ -91,4 +102,9 @@ input.rounded {
   40%, 60% {
     transform: translate3d(4px, 0, 0);
   }
+}
+
+#video-placeholder {
+  width: 320px;
+  max-width: 320px;
 }

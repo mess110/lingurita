@@ -11,10 +11,10 @@ function getParameterByName(name, url) {
 }
 
 const animate = (selector) => {
-    var elm = document.querySelector(selector)
-    elm.classList.add('shake-animation')
-    var newone = elm.cloneNode(true)
-    elm.parentNode.replaceChild(newone, elm)
+  var elm = document.querySelector(selector)
+  elm.classList.add('shake-animation')
+  var newone = elm.cloneNode(true)
+  elm.parentNode.replaceChild(newone, elm)
 }
 
 const isBlank = (item) => {
@@ -105,24 +105,61 @@ const apiCall = (url, body, callback) => {
     })
 }
 
+let player;
+
 const getItem = () => {
   const code = getParameterByName('code')
   const q = getParameterByName('q')
 
   let url = `https://json.northpole.ro/write_only_storage.json?api_key=${API_KEY}&secret=${SECRET}&version=${VERSION}&lingurita_type=item&code=${code}`
   apiCall(url, undefined, (json) => {
-      let item = json.slice(-1)[0]
+    let item = json.slice(-1)[0]
 
-      if (item === undefined) {
-        document.querySelector("#name").innerHTML = 'nu a fost gasit'
-        document.querySelector('#add-it').style.display = 'block'
-        let urlCode = code === null ? '' : code
-        let qCode = q === null ? '' : q
-        document.querySelector('#add-link').href = `add.html?code=${urlCode}&q=${qCode}`
-      } else {
-        document.querySelector("#name").innerHTML = item.name
+    if (item === undefined) {
+      document.querySelector("#name").textContent = 'nu a fost gasit'
+      document.querySelector('#add-it').style.display = 'block'
+      let urlCode = code === null ? '' : code
+      let qCode = q === null ? '' : q
+      document.querySelector('#add-link').href = `add.html?code=${urlCode}&q=${qCode}`
+    } else {
+      document.querySelector("#name").textContent = item.name
+      let spooniesCount = parseInt(item.raw_total_sugar) / LINGURITA_SUGAR
+      const spooniesCountConst = spooniesCount
+      let spooniesText = spooniesCount + " lingurițe zahăr<br />"
+      while (spooniesCount > 0) {
+        spooniesText += '🥄'
+        spooniesCount -= 1
       }
-      document.querySelector("#code").innerHTML = code === null ? q : code
+      spooniesText += `<br />în ${item.raw_total_weight}g`
+      document.querySelector("#spoonies").innerHTML = spooniesText
+
+      player = new YT.Player('video-placeholder', {
+        width: 320,
+        height: 240,
+        videoId: VIDEO_ID,
+        playerVars: {
+          color: 'white',
+          controls: 0,
+          autoplay: 1,
+        },
+        events: {
+          onReady: () => {
+            player.mute()
+            player.playVideo()
+            let currentTime = 0
+
+            setInterval(function () {
+              currentTime += 1
+              if (currentTime == spooniesCountConst * VIDEO_TIME_PER_SPOONY) {
+                player.seekTo(0)
+                currentTime = 0
+              }
+            }, 1000)
+          }
+        }
+      });
+    }
+    document.querySelector("#code").textContent = code === null ? q : code
   })
 }
 
@@ -191,6 +228,9 @@ const API_KEY = 'lingurita';
 const SECRET = '81cc6b0c14e5c4fa11f51f3bad1123f7';
 const VERSION = '1-dev';
 const DONATION_ADDRESS = '3HYZN775GFj7cxoJQSkjhH238DLfRVegjx';
+const LINGURITA_SUGAR = 5; // grams
+const VIDEO_TIME_PER_SPOONY = 1; // seconds 1 spoon is added to the bowl
+const VIDEO_ID = 'bTqVqk7FSmY';
 
 (function() {
   let page = 'index'
