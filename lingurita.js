@@ -55,7 +55,7 @@ const getScanLink = () => {
 const doSearch = () => {
   const q = getParameterByName('q')
 
-  let url = `https://json.northpole.ro/write_only_storage.json?api_key=lingurita&secret=81cc6b0c14e5c4fa11f51f3bad1123f7&lingurita_type=item&__limit=50&__regexi=name&name=${q}`
+  let url = `https://json.northpole.ro/write_only_storage.json?api_key=${API_KEY}&secret=${SECRET}&lingurita_type=item&__limit=50&__regexi=name&name=${q}`
   apiCall(url, undefined, (json) => {
     if (json.length == 0) {
       window.location.href = `${getHostedUrl()}item.html?q=${q}`
@@ -106,7 +106,7 @@ const getItem = () => {
   const code = getParameterByName('code')
   const q = getParameterByName('q')
 
-  let url = `https://json.northpole.ro/write_only_storage.json?api_key=lingurita&secret=81cc6b0c14e5c4fa11f51f3bad1123f7&lingurita_type=item&code=${code}`
+  let url = `https://json.northpole.ro/write_only_storage.json?api_key=${API_KEY}&secret=${SECRET}&lingurita_type=item&code=${code}`
   apiCall(url, undefined, (json) => {
       // TODO: use last elelement from the list, it is older
       let item = json[0]
@@ -161,10 +161,10 @@ const addItem = () => {
   }
 
   body = {
-    api_key: 'lingurita',
-    secret: '81cc6b0c14e5c4fa11f51f3bad1123f7',
+    api_key: API_KEY,
+    secret: SECRET,
     lingurita_type: 'item',
-    version: '1',
+    version: VERSION,
     name: name,
     raw_total_weight: weight,
     raw_total_sugar: rawTotalSugar,
@@ -173,6 +173,10 @@ const addItem = () => {
 
   console.log(body)
 }
+
+const API_KEY = 'lingurita';
+const SECRET = '81cc6b0c14e5c4fa11f51f3bad1123f7';
+const VERSION = '1';
 
 (function() {
   let page = 'index'
