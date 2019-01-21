@@ -105,6 +105,34 @@ const apiCall = (url, body, callback) => {
     })
 }
 
+const playYT = (spooniesCountConst) => {
+  player = new YT.Player('video-placeholder', {
+    width: 320,
+    height: 240,
+    videoId: VIDEO_ID,
+    playerVars: {
+      color: 'white',
+      controls: 0,
+      autoplay: 1,
+    },
+    events: {
+      onReady: () => {
+        player.mute()
+        player.playVideo()
+        let currentTime = 0
+
+        setInterval(function () {
+          currentTime += 1
+          if (currentTime >= spooniesCountConst * VIDEO_TIME_PER_SPOONY) {
+            player.seekTo(0)
+            currentTime = 0
+          }
+        }, 1000)
+      }
+    }
+  });
+}
+
 let player;
 
 const getItem = () => {
@@ -132,32 +160,15 @@ const getItem = () => {
       }
       spooniesText += `<br />în ${item.raw_total_weight}g`
       document.querySelector("#spoonies").innerHTML = spooniesText
+      document.querySelector(".video-container").style.display = 'block'
 
-      player = new YT.Player('video-placeholder', {
-        width: 320,
-        height: 240,
-        videoId: VIDEO_ID,
-        playerVars: {
-          color: 'white',
-          controls: 0,
-          autoplay: 1,
-        },
-        events: {
-          onReady: () => {
-            player.mute()
-            player.playVideo()
-            let currentTime = 0
-
-            setInterval(function () {
-              currentTime += 1
-              if (currentTime >= spooniesCountConst * VIDEO_TIME_PER_SPOONY) {
-                player.seekTo(0)
-                currentTime = 0
-              }
-            }, 1000)
-          }
+      let checkYT = setInterval(function () {
+        if(YT.loaded){
+          playYT(spooniesCountConst)
+          console.log('Checking YT loaded')
+          clearInterval(checkYT);
         }
-      });
+      }, 200);
     }
     document.querySelector("#code").textContent = code === null ? q : code
   })
