@@ -123,8 +123,8 @@ const getItem = () => {
       document.querySelector('#add-link').href = `add.html?code=${urlCode}&q=${qCode}`
     } else {
       document.querySelector("#name").textContent = item.name
-      let spooniesCount = parseInt(parseInt(item.raw_total_sugar) / LINGURITA_SUGAR)
-      const spooniesCountConst = spooniesCount
+      let spooniesCount = parseInt(item.raw_total_sugar) / LINGURITA_SUGAR
+      const spooniesCountConst = parseInt(spooniesCount)
       let spooniesText = spooniesCount + " lingurițe zahăr<br />"
       while (spooniesCount > 0) {
         spooniesText += '🥄'
