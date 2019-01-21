@@ -8,34 +8,37 @@
         <link href="lingurita.css" rel="stylesheet" type="text/css" />
     </head>
     <body>
-        <div class="about">
-            <a class="icon" href="javascript:history.back()">Go Back</a>
-
-            <h3>Mantra</h3>
-            <ul>
-                <li>People should know what they eat</li>
-                <li>Labels should be human readable</li>
-                <li>Knowledge should be shared</li>
-            </ul>
-            <h3>Lingurita community</h3>
-            <ul>
-                <li>How many teaspoons of sugar does your food contain?</li>
-                <li>How many additives?</li>
-            </ul>
-            <p>These are the questions the app answers.</p>
-            <h3>Product database</h3>
-            <p>We have over <b>3000</b> items and growing.</p>
+        <div class="text-container">
+            <h1>Lingurița</h1>
+            <p>Tu știi cât zahăr mănânci?</p>
+            <p>E prea mic scrisul de pe produse?</p>
+            <p>Gramajele nu îți spun nimic?</p>
+            <br />
+            <br />
+            <br />
+            <p>Cu aplicația asta scanezi produse și afli câte lingurițe de zahăr conțin. Simplu și rapid.</p>
+            <p>Dacă nu găsești produsul, îl poți adăuga tu. Poate îl găsesc alții după.</p>
+            <br />
+            <br />
+            <br />
+            <h3>Database</h3>
+            <p>We have over <b>3000</b> items.</p>
             <p>The database is populated from crawled public data (<a href="http://www.infocons.ro/">infocons.ro</a>) and user submitted content.</p>
-            <p>No user information is stored. The history is stored only on the device and it is not sent to a server.</p>
+            <p>No user personal information is used/stored.</p>
+            <br />
+            <br />
+            <br />
             <h3>Free Software</h3>
             <p>This service is free for everybody. You can support it by donating BTC:</p>
-            <div>
-                <p>TODO: QR CODE</p>
-                <p>3HYZN775GFj7cxoJQSkjhH238DLfRVegjx</p>
-                <p><a href="https://github.com/mess110/lingurita">source code</a></p>
-            </div>
+            <center><div id="qrcode"></div></center>
+            <center><p id="qrcode-text"></p></center>
+            <center><p><a href="https://github.com/mess110/lingurita">source code</a></p></center>
+            <br />
+            <br />
+            <br />
         </div>
 
+        <script src="https://cdn.jsdelivr.net/npm/davidshimjs-qrcodejs@0.0.2/qrcode.min.js"></script>
         <script src="lingurita.js" charset="utf-8"></script>
     </body>
 </html>

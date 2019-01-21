@@ -55,7 +55,7 @@ const getScanLink = () => {
 const doSearch = () => {
   const q = getParameterByName('q')
 
-  let url = `https://json.northpole.ro/write_only_storage.json?api_key=${API_KEY}&secret=${SECRET}&lingurita_type=item&__limit=50&__regexi=name&name=${q}`
+  let url = `https://json.northpole.ro/write_only_storage.json?api_key=${API_KEY}&secret=${SECRET}&version=${VERSION}&lingurita_type=item&__limit=50&__regexi=name&name=${q}`
   apiCall(url, undefined, (json) => {
     if (json.length == 0) {
       window.location.href = `${getHostedUrl()}item.html?q=${q}`
@@ -67,7 +67,7 @@ const doSearch = () => {
     }
 
     let newone = document.createElement('div')
-    newone.classList.add('search')
+    newone.classList.add('text-container')
 
     json.forEach((e) => {
       let child = document.createElement('div')
@@ -79,7 +79,7 @@ const doSearch = () => {
       newone.appendChild(child)
     })
 
-    document.querySelector('.search').replaceWith(newone)
+    document.querySelector('.text-container').replaceWith(newone)
   })
 }
 
@@ -90,13 +90,16 @@ const apiCall = (url, body, callback) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: body
+      body: JSON.stringify(body)
     }
   }
 
   fetch(url, body)
-    .then(function(response) { return response.json() })
-    .then(callback)
+    .then((response) => {
+      let json = response.json()
+      console.log(json);
+      return json
+    }).then(callback)
     .catch((err) => {
       console.error(err)
     })
@@ -106,10 +109,9 @@ const getItem = () => {
   const code = getParameterByName('code')
   const q = getParameterByName('q')
 
-  let url = `https://json.northpole.ro/write_only_storage.json?api_key=${API_KEY}&secret=${SECRET}&lingurita_type=item&code=${code}`
+  let url = `https://json.northpole.ro/write_only_storage.json?api_key=${API_KEY}&secret=${SECRET}&version=${VERSION}&lingurita_type=item&code=${code}`
   apiCall(url, undefined, (json) => {
-      // TODO: use last elelement from the list, it is older
-      let item = json[0]
+      let item = json.slice(-1)[0]
 
       if (item === undefined) {
         document.querySelector("#name").innerHTML = 'nu a fost gasit'
@@ -119,7 +121,6 @@ const getItem = () => {
         document.querySelector('#add-link').href = `add.html?code=${urlCode}&q=${qCode}`
       } else {
         document.querySelector("#name").innerHTML = item.name
-        console.log(json)
       }
       document.querySelector("#code").innerHTML = code === null ? q : code
   })
@@ -149,13 +150,13 @@ const addItem = () => {
     animate('#code')
     return
   }
-  let weight = document.querySelector('#weight').value
-  if (isBlank(code)) {
-    animate('#weight')
+  let rawTotalWeight = document.querySelector('#raw-total-weight').value
+  if (isBlank(rawTotalWeight)) {
+    animate('#raw-total-weight')
     return
   }
   let rawTotalSugar = document.querySelector('#raw-total-sugar').value
-  if (isBlank(code)) {
+  if (isBlank(rawTotalSugar)) {
     animate('#raw-total-sugar')
     return
   }
@@ -164,19 +165,32 @@ const addItem = () => {
     api_key: API_KEY,
     secret: SECRET,
     lingurita_type: 'item',
-    version: VERSION,
+    version: `${VERSION}`,
     name: name,
-    raw_total_weight: weight,
+    code: code,
+    raw_total_weight: rawTotalWeight,
     raw_total_sugar: rawTotalSugar,
   }
-  // TODO: proper formatting: numbers, etc
 
-  console.log(body)
+  let url = `https://json.northpole.ro/write_only_storage.json`
+  apiCall(url, body, (json) => {
+    window.location.href = `${getHostedUrl()}item.html?code=${code}`
+  })
+}
+
+const addBackButton = () => {
+  let backButton = document.createElement('a')
+  backButton.href = 'javascript:history.back()'
+  backButton.classList.add('back-button')
+  backButton.textContent = '🔙'
+
+  document.body.appendChild(backButton)
 }
 
 const API_KEY = 'lingurita';
 const SECRET = '81cc6b0c14e5c4fa11f51f3bad1123f7';
-const VERSION = '1';
+const VERSION = '1-dev';
+const DONATION_ADDRESS = '3HYZN775GFj7cxoJQSkjhH238DLfRVegjx';
 
 (function() {
   let page = 'index'
@@ -194,15 +208,21 @@ const VERSION = '1';
       document.querySelector('#scan').href = getScanLink()
       break;
     case 'item':
+      addBackButton()
       getItem()
       break;
     case 'search':
+      addBackButton()
       doSearch()
       break;
     case 'add':
+      addBackButton()
       prepareAdd()
       break;
     case 'about':
+      addBackButton()
+      new QRCode(document.querySelector("#qrcode"), DONATION_ADDRESS)
+      document.querySelector('#qrcode-text').textContent = DONATION_ADDRESS
       break;
     default:
       console.error(`Unknown page '${page}'`)
