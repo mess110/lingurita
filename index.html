@@ -10,16 +10,18 @@
     <body>
         <div class="container">
             <div class="child">
-                <div class="info"></div>
-                <input id="q" class="rounded" type="text" onkeydown="doKeyDown(event, goToSearch)" placeholder="nume sau cod"/>
+                <div id="oval">
+                    <a class="icon" style="position: relative; top: 18px; right: 20px;" href="#" onclick="goToSearch()">🔎</a>
+                </div>
                 <div>
-                    <a class="icon" href="#" onclick="goToSearch()">🔎</a>
-                    <a id="scan" class="icon" href="#">📷</a>
-                    <a class="icon" href="add.html">➕</a>
+                    <div class="info"></div>
+                    <input id="q" class="rounded search-bar" type="text" onkeydown="doKeyDown(event, goToSearch)" placeholder="nume sau cod"/>
                 </div>
             </div>
         </div>
+        <a id="scan" class="scan-button" href="#">📷</a>
 
+        <script src="utils.js" charset="utf-8"></script>
         <script src="lingurita.js" charset="utf-8"></script>
     </body>
 </html>

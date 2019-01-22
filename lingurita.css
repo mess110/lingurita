@@ -4,6 +4,7 @@
 
   --main-text-color: #fefefe;
   --input-bg-color: #fefefe;
+  --input-bgg-color: #b7b7b7;
 
   --icon-size: 32px;
   --fab-space: 25px;
@@ -18,9 +19,9 @@ html, body {
 
 body {
   background: radial-gradient(
-    circle closest-corner at center 30%,
-    var(--main-bg-color),
-    var(--secondary-bg-color) 75%
+  circle closest-corner at center 30%,
+  var(--main-bg-color),
+  var(--secondary-bg-color) 75%
   ) no-repeat;
 }
 
@@ -55,9 +56,28 @@ input.rounded {
   font-weight: bold;
   margin-bottom: 20px;
   background-color: var(--input-bg-color);
+  position: relative;
+  z-index: 2;
 }
 
-.back-button {
+#oval {
+  width: 130px;
+  height: 75px;
+  background: var(--input-bg-color);
+  border: 5px solid var(--input-bgg-color);
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+  top: 69px;
+  right: 81px;
+}
+
+/* .search-bar:before { */
+  /* content: "Read this -"; */
+/* } */
+
+
+.back-button, .scan-button {
   position: fixed;
   bottom: var(--fab-space);
   left: var(--fab-space);
@@ -73,10 +93,16 @@ input.rounded {
   font-size: var(--icon-size);
 }
 
+.max-width {
+  max-width: 360px;
+}
+
 .info {
   color: var(--main-text-color);
   font-weight: bold;
   margin-bottom: 10px;
+  word-wrap: break-word;
+  overflow: hidden;
 }
 
 .text-container {
