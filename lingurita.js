@@ -91,6 +91,8 @@ const doSearch = () => {
 
     json.forEach((e) => {
       let child = document.createElement('div')
+      child.classList.add('bottom-border')
+      child.classList.add('search-result')
       child.textContent = e.name
       child.onclick = () => {
         window.location.href = `${getHostedUrl()}item.html?code=${e.code}`
