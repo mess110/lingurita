@@ -33,25 +33,25 @@ const doKeyDown = function (event, callback) {
     callback()
   }
 
-  let rawTotalWeight = document.querySelector('#raw-total-weight')
-  let rawTotalSugar = document.querySelector('#raw-total-sugar')
-  let rawSugarPer100 = document.querySelector('#raw-sugar-per-100')
+  let dataTotalWeight = document.querySelector('#data-total-weight')
+  let dataTotalSugar = document.querySelector('#data-total-sugar')
+  let dataSugarPer100 = document.querySelector('#data-sugar-per-100')
 
   let id = event.srcElement.id
   switch (id) {
-    case 'raw-total-weight':
-      if (haveValues([rawTotalSugar, rawTotalWeight])) {
-        rawSugarPer100.value = (parseFloat(rawTotalWeight.value) / parseFloat(rawTotalSugar.value)) * 100
+    case 'data-total-weight':
+      if (haveValues([dataTotalSugar, dataTotalWeight])) {
+        dataSugarPer100.value = (parseFloat(dataTotalWeight.value) / parseFloat(dataTotalSugar.value)) * 100
       }
       break;
-    case 'raw-total-sugar':
-      if (haveValues([rawTotalSugar, rawTotalWeight])) {
-        rawSugarPer100.value = (parseFloat(rawTotalWeight.value) / parseFloat(rawTotalSugar.value)) * 100
+    case 'data-total-sugar':
+      if (haveValues([dataTotalSugar, dataTotalWeight])) {
+        dataSugarPer100.value = (parseFloat(dataTotalWeight.value) / parseFloat(dataTotalSugar.value)) * 100
       }
       break;
-    case 'raw-sugar-per-100':
-      if (haveValues([rawSugarPer100, rawTotalWeight])) {
-        rawTotalSugar.value = (parseFloat(rawSugarPer100.value) / 100) * parseFloat(rawTotalWeight.value)
+    case 'data-sugar-per-100':
+      if (haveValues([dataSugarPer100, dataTotalWeight])) {
+        dataTotalSugar.value = (parseFloat(dataSugarPer100.value) / 100) * parseFloat(dataTotalWeight.value)
       }
       break;
     default:
@@ -220,14 +220,14 @@ const getItem = () => {
     } else {
       document.querySelector("#name").textContent = item.name
 
-      let spooniesCount = parseInt(item.raw_total_sugar) / LINGURITA_SUGAR
+      let spooniesCount = parseInt(item.data_total_sugar) / LINGURITA_SUGAR
       const spooniesCountConst = parseInt(spooniesCount)
       let spooniesText = spooniesCount + " lingurițe zahăr<br />"
       while (spooniesCount > 0) {
         spooniesText += '🥄'
         spooniesCount -= 1
       }
-      spooniesText += `<br />în ${item.raw_total_weight}g`
+      spooniesText += `<br />în ${item.data_total_weight}g`
       spooniesText += `<br />(1 linguriță = ${LINGURITA_SUGAR}g zahăr)`
       document.querySelector("#spoonies").innerHTML = spooniesText
       document.querySelector(".video-container").style.display = 'block'
@@ -269,19 +269,19 @@ const addItem = () => {
     animate('#code')
     return
   }
-  let rawTotalWeight = document.querySelector('#raw-total-weight').value
-  if (isBlank(rawTotalWeight) || parseFloat(rawTotalWeight) < 1) {
-    animate('#raw-total-weight')
+  let dataTotalWeight = document.querySelector('#data-total-weight').value
+  if (isBlank(dataTotalWeight) || parseFloat(dataTotalWeight) < 1) {
+    animate('#data-total-weight')
     return
   }
-  let rawTotalSugar = document.querySelector('#raw-total-sugar').value
-  if (isBlank(rawTotalSugar) || parseFloat(rawTotalSugar) < 0) {
-    animate('#raw-total-sugar')
+  let dataTotalSugar = document.querySelector('#data-total-sugar').value
+  if (isBlank(dataTotalSugar) || parseFloat(dataTotalSugar) < 0) {
+    animate('#data-total-sugar')
     return
   }
-  let rawSugarPer100 = document.querySelector('#raw-sugar-per-100').value
-  if (isBlank(rawSugarPer100) || parseFloat(rawSugarPer100) < 0) {
-    animate('#raw-sugar-per-100')
+  let dataSugarPer100 = document.querySelector('#data-sugar-per-100').value
+  if (isBlank(dataSugarPer100) || parseFloat(dataSugarPer100) < 0) {
+    animate('#data-sugar-per-100')
     return
   }
 
@@ -293,9 +293,9 @@ const addItem = () => {
     name: name,
     code: code,
     source: 'user',
-    raw_total_weight: parseFloat(rawTotalWeight),
-    raw_total_sugar: parseFloat(rawTotalSugar),
-    raw_sugar_per_100: parseFloat(rawSugarPer100)
+    data_total_weight: parseFloat(dataTotalWeight),
+    data_total_sugar: parseFloat(dataTotalSugar),
+    data_sugar_per_100: parseFloat(dataSugarPer100)
   }
 
   let url = `https://json.northpole.ro/write_only_storage.json`
