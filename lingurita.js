@@ -20,8 +20,43 @@ function isMobile() {
   return isMobile
 }
 
-const enterGoTo = function (event, callback) {
-  if (event.keyCode == 13) callback()
+const haveValues = function (array) {
+  result = true
+  Array.from(array).forEach((e) => {
+    result = result && !isBlank(e.value)
+  })
+  return result
+}
+
+const doKeyDown = function (event, callback) {
+  if (event.keyCode == 13) {
+    callback()
+  }
+
+  let rawTotalWeight = document.querySelector('#raw-total-weight')
+  let rawTotalSugar = document.querySelector('#raw-total-sugar')
+  let rawSugarPer100 = document.querySelector('#raw-sugar-per-100')
+
+  let id = event.srcElement.id
+  switch (id) {
+    case 'raw-total-weight':
+      if (haveValues([rawTotalSugar, rawTotalWeight])) {
+        rawSugarPer100.value = (parseFloat(rawTotalWeight.value) / parseFloat(rawTotalSugar.value)) * 100
+      }
+      break;
+    case 'raw-total-sugar':
+      if (haveValues([rawTotalSugar, rawTotalWeight])) {
+        rawSugarPer100.value = (parseFloat(rawTotalWeight.value) / parseFloat(rawTotalSugar.value)) * 100
+      }
+      break;
+    case 'raw-sugar-per-100':
+      if (haveValues([rawSugarPer100, rawTotalWeight])) {
+        rawTotalSugar.value = (parseFloat(rawSugarPer100.value) / 100) * parseFloat(rawTotalWeight.value)
+      }
+      break;
+    default:
+      console.error(`Don't know how to handle ${id}`)
+  }
 }
 
 const animate = (selector) => {
@@ -69,7 +104,8 @@ const getScanLink = () => {
 const doSearch = () => {
   const q = getParameterByName('q')
 
-  let url = `https://json.northpole.ro/write_only_storage.json?api_key=${API_KEY}&secret=${SECRET}&version=${VERSION}&lingurita_type=item&__limit=50&__regexi=name&name=${q}`
+  let version = USE_VERSION ? `&version=${VERSION}` : ''
+  let url = `https://json.northpole.ro/write_only_storage.json?api_key=${API_KEY}&secret=${SECRET}${version}&lingurita_type=item&__limit=50&__regexi=name&name=${q}`
   apiCall(url, undefined, (json) => {
     if (json.length == 0) {
       window.location.href = `${getHostedUrl()}item.html?q=${q}`
@@ -234,13 +270,18 @@ const addItem = () => {
     return
   }
   let rawTotalWeight = document.querySelector('#raw-total-weight').value
-  if (isBlank(rawTotalWeight)) {
+  if (isBlank(rawTotalWeight) || parseFloat(rawTotalWeight) < 1) {
     animate('#raw-total-weight')
     return
   }
   let rawTotalSugar = document.querySelector('#raw-total-sugar').value
-  if (isBlank(rawTotalSugar)) {
+  if (isBlank(rawTotalSugar) || parseFloat(rawTotalSugar) < 0) {
     animate('#raw-total-sugar')
+    return
+  }
+  let rawSugarPer100 = document.querySelector('#raw-sugar-per-100').value
+  if (isBlank(rawSugarPer100) || parseFloat(rawSugarPer100) < 0) {
+    animate('#raw-sugar-per-100')
     return
   }
 
@@ -251,8 +292,10 @@ const addItem = () => {
     version: `${VERSION}`,
     name: name,
     code: code,
-    raw_total_weight: rawTotalWeight,
-    raw_total_sugar: rawTotalSugar,
+    source: 'user',
+    raw_total_weight: parseFloat(rawTotalWeight),
+    raw_total_sugar: parseFloat(rawTotalSugar),
+    raw_sugar_per_100: parseFloat(rawSugarPer100)
   }
 
   let url = `https://json.northpole.ro/write_only_storage.json`
@@ -279,15 +322,18 @@ const addAboutButton = () => {
   document.body.appendChild(backButton)
 }
 
-const API_KEY = 'lingurita';
-const SECRET = '81cc6b0c14e5c4fa11f51f3bad1123f7';
-const VERSION = '1-dev.1';
-const DONATION_ADDRESS = '3HYZN775GFj7cxoJQSkjhH238DLfRVegjx';
-const LINGURITA_SUGAR = 5; // grams
-const VIDEO_TIME_PER_SPOONY = 1; // seconds 1 spoon is added to the bowl
-const VIDEO_ID = 'bTqVqk7FSmY';
+const API_KEY = 'lingurita'
+const SECRET = '81cc6b0c14e5c4fa11f51f3bad1123f7'
+const USE_VERSION = true
+const VERSION = '2'
+const DONATION_ADDRESS = '3HYZN775GFj7cxoJQSkjhH238DLfRVegjx'
+const LINGURITA_SUGAR = 5 // grams
+const VIDEO_TIME_PER_SPOONY = 1 // seconds 1 spoon is added to the bowl
+const VIDEO_ID = 'bTqVqk7FSmY'
 
-(function() {
+;(function() {
+  if (USE_VERSION) { console.info(`Using version ${VERSION}`) }
+
   let page = 'index'
   let baseUrl = getReadableUrl()
   if (baseUrl.endsWith('.html')) {
